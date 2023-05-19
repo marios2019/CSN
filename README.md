@@ -1,14 +1,15 @@
 # Cross-Shape Attention for Part Segmentation of 3D Point Clouds
 
-[Project Page](https://marios2019.github.io/CSN/) | Paper ([arxiv](https://arxiv.org/abs/2003.09053))
+This is the official implementation of **Cross-ShapeNet**, deep learning method that propagates point-wise feature 
+representations across shapes within a collection for the purpose of 3D part segmentation. For more technical details,
+please refer to:
 
-We present a deep learning method that propagates point-wise feature representations across shapes within a collection for 
-the purpose of 3D shape segmentation. We propose a cross-shape attention mechanism to enable interactions between a 
-shape’s point-wise features and those of other shapes. The mechanism assesses both the degree of interaction between 
-points and also mediates feature propagation across shapes, improving the accuracy and consistency of the resulting 
-point-wise feature representations for shape segmentation. Our method also proposes a shape retrieval measure to select 
-suitable shapes for cross-shape attention operations for each test shape. Our experiments demonstrate that our approach 
-yields state-of-the-art results in the popular PartNet dataset.
+**Cross-Shape Attention for Part Segmentation of 3D Point Clouds**
+
+[Marios Loizou](https://marios2019.github.io/), [Siddhant Garg](https://gargsid.github.io/), [Dmitry Petrov](https://lodurality.github.io/),
+[Melinos Averkiou](https://melinos.github.io/), [Evangelos Kalogerakis](https://people.cs.umass.edu/~kalo/)
+
+[**Project Page**](https://marios2019.github.io/CSN/) | **Paper** ([arxiv](https://arxiv.org/abs/2003.09053))
 
 ## CSN pipeline
 <p align="center"><img src="https://marios2019.github.io/CSN/assets/teaser.png" width="100%"></p>
