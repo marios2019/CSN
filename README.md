@@ -12,8 +12,8 @@ yields state-of-the-art results in the popular PartNet dataset.
 
 ## CSN pipeline
 <p align="center"> <img src="https://marios2019.github.io/CSN/assets/teaser.png" width="100%"> </p>
-*Left:* Given an input shape collection, our method constructs a graph where each shape is represented as a node and 
-edges indicate shape pairs that are deemed compatible for cross-shape feature propagation. *Middle:* Our network is 
+**Left:** Given an input shape collection, our method constructs a graph where each shape is represented as a node and 
+edges indicate shape pairs that are deemed compatible for cross-shape feature propagation. Middle: Our network is 
 designed to compute point-wise feature representations for a given shape (grey shape) by enabling interactions between 
 its own point-wise features and those of other shapes using our cross-shape attention mechanism. *Right:* As a result, 
 the point-wise features of the shape become more synchronized with ones of other relevant shapes leading to more 
