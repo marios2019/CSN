@@ -1,6 +1,6 @@
 # Cross-Shape Attention for Part Segmentation of 3D Point Clouds
 
-This is the official implementation of **Cross-ShapeNet**, deep learning method that propagates point-wise feature 
+This is the official implementation of **Cross-ShapeNet**, a deep learning method that propagates point-wise feature 
 representations across shapes within a collection for the purpose of 3D part segmentation. For more technical details,
 please refer to:
 
