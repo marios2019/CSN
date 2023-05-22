@@ -27,3 +27,10 @@ Follow this [guide](MinkowskiNet/README.md), for the MinkowskiNet experiments on
 
 ## MID-FC Experiments
 Code coming soon!
+
+## Acknowledgement
+
+This repo is developed based on [Spatio-Temporal Segmentation](https://github.com/chrischoy/SpatioTemporalSegmentation)
+and [O-CNN](https://github.com/microsoft/O-CNN).
+
+Please also consider citing the corresponding papers.
