@@ -9,6 +9,8 @@ import MinkowskiEngine.MinkowskiOps as me
 from models.model import Model
 from models.modules.common import NormType, get_norm
 from models.modules.resnet_block import BasicBlock
+from models.attention import ScaledDotProduct, MultiHeadAttention
+from lib.utils import features_at
 
 
 class HRNetBase(Model):
@@ -286,6 +288,221 @@ class HRNetSeg3S(HRNetSeg):
 
 
 class HRNetSeg4S(HRNetSeg):
+	BLOCK = BasicBlock
+	FEAT_FACTOR = 2
+	NUM_STAGES = 4
+
+
+class HRNetSimCSN(HRNetBase):
+
+	def __init__(self, in_channels, out_channels, config, D=3, **kwargs):
+
+		super(HRNetSimCSN, self).__init__(in_channels, out_channels, config, D, **kwargs)
+
+		self.csn_head_initialization(out_channels, D, config)
+		self.weight_initialization()
+
+	def csn_head_initialization(self, out_channels, D, config):
+		bn_momentum = config.bn_momentum
+
+		# Final transitions
+		self.final_transitions = nn.ModuleList([])
+		for i in range(1, self.NUM_STAGES):
+			# Upsample all lower resolution branches to the highest resolution branch
+			init_channels = self.init_stage_dims * 2 ** i
+			block = nn.ModuleList([])
+			for j in range(i):
+				block.append(
+					ME.MinkowskiConvolutionTranspose(
+						init_channels,
+						init_channels,
+						kernel_size=3,
+						stride=2,
+						dimension=D))
+				block.append(
+					get_norm(norm_type=self.NORM_TYPE, n_channels=init_channels,
+							 D=D, bn_momentum=bn_momentum))
+				block.append(ME.MinkowskiReLU())
+			self.final_transitions.append(nn.Sequential(*block))
+
+		# FC layer
+		backbone_out_feat = np.sum([self.init_stage_dims * 2 ** s for s in range(self.NUM_STAGES)]) + self.INIT_DIM
+
+		self.d_model = config.d_model
+		fc1 = ME.MinkowskiConvolution(
+			backbone_out_feat,
+			self.d_model,
+			kernel_size=1,
+			bias=True,
+			dimension=D)
+		bnfc1 = get_norm(norm_type=self.NORM_TYPE, n_channels=self.d_model, D=D, bn_momentum=bn_momentum)
+		self.fc_layer = nn.Sequential(fc1, bnfc1, self.relu)
+
+		# CSA layer
+		self.n_head = config.n_head
+		self.MHA = MultiHeadAttention(self.n_head, self.d_model, self.d_model // self.n_head, self.d_model // self.n_head)
+
+		# Output layer
+		self.output = ME.MinkowskiConvolution(
+			self.d_model * 2,
+			out_channels,
+			kernel_size=1,
+			bias=True,
+			dimension=D)
+
+		if self.config.k_neighbors > 0:
+			# For similarity - compatibility
+			self.linear_q = nn.Linear(self.d_model, self.d_model, bias=False)
+			self.linear_k = nn.Linear(self.d_model, self.d_model, bias=False)
+			self.sim = ScaledDotProduct(self.d_model ** 0.5)
+
+	def forward(self, queries, keys=None, return_ssa=False):
+		K = len(keys) if keys is not None else 0
+
+		# Get queries and keys features from backbone
+		queries_out, keys_out = self.backbone(queries, keys, K)
+
+		# Get query SSA features
+		queries_SSA = self.get_SSA(queries_out)
+		if return_ssa:
+			return queries_SSA
+
+		if K > 0:
+			csa_queries_out = []
+			# Get key SSA features
+			keys_SSA = [queries_SSA]
+			for idx in range(K):
+				keys_SSA.append(self.get_SSA(keys_out[idx]))
+			# CSA layer
+			batch_size = queries_out.C[-1, 0] + 1
+			for b_idx in range(batch_size):
+				query_ssa_feat = features_at(queries_SSA, b_idx)
+				# Query SSA global rep (query linear transformation)
+				query_ssa_avg_pool = torch.mean(query_ssa_feat, dim=0)
+				query_ssa_glob = self.linear_q(query_ssa_avg_pool)
+				query_ssa_glob = F.normalize(query_ssa_glob, dim=-1)
+				similarity = []
+				for i in range(len(keys_SSA)):
+					key_ssa_feat = features_at(keys_SSA[i], b_idx)
+					# Key SSA global rep (key linear transformation)
+					key_ssa_avg_pool = torch.mean(key_ssa_feat, dim=0)
+					key_ssa_glob = self.linear_k(key_ssa_avg_pool)
+					key_ssa_glob = F.normalize(key_ssa_glob, dim=-1)
+					# Calculate similarity between query-key
+					sim = self.sim(query_ssa_glob.unsqueeze(0), key_ssa_glob.unsqueeze(0)).squeeze()
+					similarity.append(sim)
+				similarity = torch.stack(similarity)
+				# Calculate compatibility between query-key
+				comp = F.softmax(similarity, dim=0)
+				# Multiply by self-shape compatibility
+				csa = comp[0] * query_ssa_feat
+				# Query backbone features
+				query_feat = features_at(queries_out, b_idx)
+				query_feat = query_feat.unsqueeze(0)
+				for i in range(len(keys_out)):
+					# Key backbone features
+					key_feat = features_at(keys_out[i], b_idx)
+					key_feat = key_feat.unsqueeze(0)
+					# Get query-key CSA features
+					csa_feat, _ = self.MHA(query_feat, key_feat, key_feat)
+					# Multiply by cross-shape compatibility
+					csa += comp[i + 1] * csa_feat.squeeze(0)
+				csa_queries_out.append(csa)
+
+			# Stack CSA for all shapes
+			csa_queries_out = torch.cat(csa_queries_out, 0)
+			csa_queries_out = ME.SparseTensor(
+				csa_queries_out,
+				coordinate_map_key=queries.coordinate_map_key,
+				coordinate_manager=queries.coordinate_manager)
+		else:
+			csa_queries_out = queries_SSA
+
+		out = me.cat(queries_out, csa_queries_out)
+
+		return self.output(out)
+
+	def backbone(self, queries, keys, K):
+		# Get features from HRNet backbone
+		queries_out_init, queries_stage_output = self.forward_backbone(queries)
+		keys_out_backbone = []
+		if K > 0:
+			for idx in range(K):
+				keys_out_backbone.append(self.forward_backbone(keys[idx]))
+
+		# Final transitions for queries
+		queries_out = [queries_out_init, queries_stage_output[0]]
+		for i in range(1, self.NUM_STAGES):
+			queries_out.append(self.final_transitions[i - 1](queries_stage_output[i]))
+		queries_out = me.cat(*queries_out)
+		# FC layer
+		queries_out = self.fc_layer(queries_out)
+
+		# Final transitions for keys
+		keys_out = None
+		if K > 0:
+			keys_out = []
+			for idx in range(K):
+				key_out = [keys_out_backbone[idx][0], keys_out_backbone[idx][1][0]]
+				for i in range(1, self.NUM_STAGES):
+					key_out.append(self.final_transitions[i - 1](keys_out_backbone[idx][1][i]))
+				key_out = me.cat(*key_out)
+				# FC layer
+				key_out = self.fc_layer(key_out)
+				keys_out.append(key_out)
+
+		return queries_out, keys_out
+
+	def get_SSA(self, X):
+		SSA = []
+		batch_size = X.C[-1, 0] + 1
+		for b_idx in range(batch_size):
+			feat = features_at(X, b_idx)
+			feat = feat.unsqueeze(0)
+			# Calculate SSA
+			ssa_feat, _ = self.MHA(feat, feat, feat)
+			SSA.append(ssa_feat.squeeze(0))
+		SSA = torch.cat(SSA, 0)
+
+		return ME.SparseTensor(
+			SSA,
+			coordinate_map_key=X.coordinate_map_key,
+			coordinate_manager=X.coordinate_manager)
+
+	@staticmethod
+	def cosine_similarity(q, k):
+		# Normalize feature vectors per row
+		q_length = torch.sum(q ** 2, dim=1) ** 0.5
+		q_norm = q / q_length.unsqueeze(1)
+		# Normalize feature vectors per row
+		k_length = torch.sum(k ** 2, dim=1) ** 0.5
+		k_norm = k / k_length.unsqueeze(1)
+		# Calculate cosine similarity
+		q_norm = q_norm.unsqueeze(0)
+		k_norm = k_norm.unsqueeze(0)
+		sim = torch.bmm(q_norm, k_norm.permute(0, 2, 1)).squeeze(0)
+
+		# Max pooling per channel
+		max_row, _ = torch.max(sim, 1)
+		# Global avg pooling
+		mean_val = torch.mean(max_row)
+
+		return mean_val
+
+
+class HRNetSimCSN2S(HRNetSimCSN):
+	BLOCK = BasicBlock
+	FEAT_FACTOR = 4
+	NUM_STAGES = 2
+
+
+class HRNetSimCSN3S(HRNetSimCSN):
+	BLOCK = BasicBlock
+	FEAT_FACTOR = 2
+	NUM_STAGES = 3
+
+
+class HRNetSimCSN4S(HRNetSimCSN):
 	BLOCK = BasicBlock
 	FEAT_FACTOR = 2
 	NUM_STAGES = 4

@@ -13,7 +13,7 @@ def main():
 	# Get directories for all PartNet categories
 	if K is not None:
 		temp = '-k{}-'.format(K)
-		experiments_dir = [os.path.join(base_dir, f) for f in os.listdir(base_dir) and temp in f]
+		experiments_dir = [os.path.join(base_dir, f) for f in os.listdir(base_dir) if temp in f]
 	else:
 		experiments_dir = [os.path.join(base_dir, f) for f in os.listdir(base_dir)]
 	experiments_dir = sorted(experiments_dir)

@@ -45,8 +45,6 @@ net_arg = add_argument_group('Network')
 net_arg.add_argument('--model', type=str, default=None, help='Model name')
 net_arg.add_argument('--conv1_kernel_size', type=int, default=5, help='First layer conv kernel size')
 net_arg.add_argument('--weights', type=str, default='None', help='Saved weights to load')
-net_arg.add_argument('--use_cosine_sim', type=str2bool, default=False, help='Use cosine similarity for shape retrieval')
-net_arg.add_argument('--comp_based', type=str2bool, default=False, help='Use compatibility similarity for shape retrieval')
 net_arg.add_argument('--n_head', type=int, default=4, help='Number of heads in MHA')
 net_arg.add_argument('--d_model', type=int, default=256, help='Dimensionality of MHA embeddings')
 
@@ -93,8 +91,6 @@ data_arg.add_argument('--load_h5', type=str2bool, default=False)
 data_arg.add_argument('--train_limit_numpoints', type=int, default=0)
 data_arg.add_argument('--k_neighbors', type=int, default=1)
 data_arg.add_argument('--return_neighbors', type=str2bool, default=False)
-data_arg.add_argument('--random_pairs', type=str2bool, default=False)
-data_arg.add_argument('--random_neighbors', type=str2bool, default=False)
 
 # Point Cloud Dataset
 data_arg.add_argument('--partnet_path', type=str, default='', help='PartNet dataset root dir')
@@ -107,19 +103,13 @@ train_arg.add_argument('--stat_freq', type=int, default=40, help='print frequenc
 train_arg.add_argument('--test_stat_freq', type=int, default=100, help='print frequency')
 train_arg.add_argument('--save_freq', type=int, default=1000, help='save frequency')
 train_arg.add_argument('--val_freq', type=int, default=1000, help='validation frequency')
-train_arg.add_argument(
-    '--empty_cache_freq', type=int, default=1, help='Clear pytorch cache frequency')
+train_arg.add_argument('--empty_cache_freq', type=int, default=1, help='Clear pytorch cache frequency')
 train_arg.add_argument('--train_phase', type=str, default='train', help='Dataset for training')
 train_arg.add_argument('--val_phase', type=str, default='val', help='Dataset for validation')
-train_arg.add_argument(
-    '--overwrite_weights', type=str2bool, default=True, help='Overwrite checkpoint during training')
-train_arg.add_argument(
-    '--resume', default=None, type=str, help='path to latest checkpoint (default: none)')
-train_arg.add_argument(
-    '--resume_optimizer',
-    default=True,
-    type=str2bool,
-    help='Use checkpoint optimizer states when resume training')
+train_arg.add_argument('--overwrite_weights', type=str2bool, default=True, help='Overwrite checkpoint during training')
+train_arg.add_argument('--resume', default=None, type=str, help='path to latest checkpoint (default: none)')
+train_arg.add_argument('--resume_optimizer', default=True, type=str2bool,
+                       help='Use checkpoint optimizer states when resume training')
 train_arg.add_argument('--input_feat', type=str, default='rgb', help='Input features')
 train_arg.add_argument('--normalize_coords', type=str2bool, default=False, help='Normalize coordinates')
 train_arg.add_argument('--normalize_method', type=str, default="sphere", help='Methot do normalize coordinates')
@@ -149,8 +139,7 @@ misc_arg.add_argument('--log_level', type=str, default='INFO', choices=['INFO', 
 misc_arg.add_argument('--seed', type=int, default=123)
 misc_arg.add_argument('--avg_feat', type=str2bool, default=False,
                       help='Average all features within a quantization block equally')
-misc_arg.add_argument('--opt_speed', type=str2bool, default=False,
-                      help='Run faster at the cost of more memory')
+misc_arg.add_argument('--opt_speed', type=str2bool, default=False, help='Run faster at the cost of more memory')
 
 
 def get_config():

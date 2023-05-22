@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-source activate py3-minkv5
 
 declare -a CATEGORIES=("Bed" "Bottle" "Chair" "Clock" "Dishwasher" "Display" "Door" "Earphone" "Faucet" "Knife"
                        "Lamp" "Microwave" "Refrigerator" "StorageFurniture" "Table" "TrashCan" "Vase")
@@ -44,7 +43,3 @@ do
     fi
 done
 
-if [ $FOUND = false ]
-then
-    echo "ERROR: '$CAT' is not a PartNet category with L3 annotations"
-fi
