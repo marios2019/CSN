@@ -1,5 +1,7 @@
 # Cross-Shape Attention for Part Segmentation of 3D Point Clouds
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cross-shape-graph-convolutional-networks/3d-semantic-segmentation-on-partnet)](https://paperswithcode.com/sota/3d-semantic-segmentation-on-partnet?p=cross-shape-graph-convolutional-networks)
+
 This is the official implementation of **Cross-ShapeNet**, a deep learning method that propagates point-wise feature 
 representations across shapes within a collection for the purpose of 3D part segmentation. For more technical details,
 please refer to:
@@ -23,7 +25,7 @@ accurate fine-grained segmentation.
 
 
 ## MinkowskiNet Experiments
-Follow this [guide](MinkowskiNet/README.md), for the MinkowskiNet experiments on the PartNet dataset.
+Follow this [guide](MinkowskiNet/README.md) for the MinkowskiNet experiments on the PartNet dataset.
 
 ## MID-FC Experiments
 Code coming soon!
