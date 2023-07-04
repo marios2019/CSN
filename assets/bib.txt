@@ -1,6 +1,8 @@
 @article{CSN:2023,
-  title={{Cross-Shape Attention for Part Segmentation of 3D Point Clouds}},
-  author={Marios Loizou and Siddhant Garg and Dmitry Petrov and Melinos Averkiou and Evangelos Kalogerakis},
-  journal={arXiv preprint arXiv:2003.09053},
-  year={2023}
+  author  = {Marios Loizou and Siddhant Garg and Dmitry Petrov and Melinos Averkiou and Evangelos Kalogerakis},
+  title   = {{Cross-Shape Attention for Part Segmentation of 3D Point Clouds}},
+  journal = {Computer Graphics Forum (Proc. SGP)},
+  year    = {2023},
+  volume  = {42},
+  issue   = {5}
 }
