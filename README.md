@@ -36,3 +36,16 @@ This repo is developed based on [Spatio-Temporal Segmentation](https://github.co
 and [O-CNN](https://github.com/microsoft/O-CNN).
 
 Please also consider citing the corresponding papers.
+
+## Citation
+
+```latex
+@article{CSN:2023,
+  author  = {Marios Loizou and Siddhant Garg and Dmitry Petrov and Melinos Averkiou and Evangelos Kalogerakis},
+  title   = {{Cross-Shape Attention for Part Segmentation of 3D Point Clouds}},
+  journal = {Computer Graphics Forum (Proc. SGP)},
+  year    = {2023},
+  volume  = {42},
+  issue   = {5}
+}
+```
