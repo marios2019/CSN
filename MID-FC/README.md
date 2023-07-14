@@ -94,20 +94,3 @@ python run_csa_pred.py --logs_dir=LOGS --start=0 --end=16
 - `--logs_dir`: Path to the folder that contains `pretrained_models` directory
 
 The results will be stored in the `logs_dir/pretrained_models/run_1/PARTNAME/part_IoU_summaries.csv`, where `PARTNAME` is individual shape category. 
-
-## Results
-
-<p align="center"><img src="https://github.com/gargsid/CrossShapeNet/blob/main/assets/midfc_results.png" width="100%"></p>
-
-## Citation
-Please also consider citing the corresponding papers.
-```
-@article{CSN:2023,
-  author  = {Marios Loizou and Siddhant Garg and Dmitry Petrov and Melinos Averkiou and Evangelos Kalogerakis},
-  title   = {{Cross-Shape Attention for Part Segmentation of 3D Point Clouds}},
-  journal = {Computer Graphics Forum (Proc. SGP)},
-  year    = {2023},
-  volume  = {42},
-  issue   = {5}
-}
-```
