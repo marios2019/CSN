@@ -1,6 +1,6 @@
 # MID-FC + CrossShapeNet
 
-This folder contains the implementation of Cross-Shape Attention on top of the point-cloud features extracted from MID-FC architecture that led to state-of-the-art results on the PartNet Semantic Shape Segmentation benchmark. Please checkout the following links for details on our work. Please follow this documentation on how to process the PartNet segmentation dataset, extract and store the MID-Net point cloud features, and training CrossShapeNet on top of those features for segmentation. 
+This folder contains the implementation of Cross-Shape Attention on top of the point-cloud features extracted from MID-FC architecture that led to state-of-the-art results on the PartNet Semantic Shape Segmentation benchmark. Please follow this documentation on how to process the PartNet segmentation dataset, extract and store the MID-Net point cloud features, and training CrossShapeNet on top of those features for segmentation. 
 <!-- 
 **Cross-Shape Attention for Part Segmentation of 3D Point Clouds | [Project Page](https://marios2019.github.io/CSN/) | [Paper](https://arxiv.org/abs/2003.09053)** -->
 
