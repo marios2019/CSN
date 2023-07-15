@@ -11,7 +11,8 @@ please refer to:
 [Marios Loizou](https://marios2019.github.io/), [Siddhant Garg](https://gargsid.github.io/), [Dmitry Petrov](https://lodurality.github.io/),
 [Melinos Averkiou](https://melinos.github.io/), [Evangelos Kalogerakis](https://people.cs.umass.edu/~kalo/)
 
-[**Project Page**](https://marios2019.github.io/CSN/) | **Paper** ([arxiv](https://arxiv.org/abs/2003.09053))
+[**Project Page**](https://marios2019.github.io/CSN/) | **Paper** ([arxiv](https://arxiv.org/abs/2003.09053), 
+[CGF](https://diglib.eg.org/handle/10.1111/cgf14909)) | [**SGP 2023 presentation**](https://marios2019.github.io/CSN/assets/CSN_presentation.pdf)
 
 ## CSN pipeline
 <p align="center"><img src="https://marios2019.github.io/CSN/assets/teaser.png" width="100%"></p>
@@ -23,12 +24,11 @@ its own point-wise features and those of other shapes using our cross-shape atte
 the point-wise features of the shape become more synchronized with ones of other relevant shapes leading to more 
 accurate fine-grained segmentation.
 
-
 ## MinkowskiNet Experiments
 Follow this [guide](MinkowskiNet/README.md) for the MinkowskiNet experiments on the PartNet dataset.
 
 ## MID-FC Experiments
-Code coming soon!
+To conduct the MID-FC experiments on the PartNet dataset, please follow the instructions in the following [guide](MID-FC/README.md).
 
 ## Acknowledgement
 
