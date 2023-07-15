@@ -93,8 +93,20 @@
     <section id="results"/>
         <h2>Qualitative Results</h2>
         <hr>
+        <h3>MinkNetHRNet</h3>
         <figure style="width: 100%;">
-            <a href="assets/results.png"><img width="100%" src="assets/results.png"></a>
+            <a href="assets/minkowskinet_results.png"><img width="100%" src="assets/minkowskinet_results.png"></a>
+            <p class="caption" style="margin-bottom: 1px; text-align: justify">
+               Qualitative comparisons for a few characteristic test shapes of PartNet between the original MinkowskiNet for
+                3D shape segmentation (“MinkResUNet”), our backbone (“MinkHRNet”), and CrossShapeNet (CSN) in case of using
+                self-shape attention alone (“MinkHRNetCSN-SSA”) and using cross-shape attention with K = 1 key shape per
+                query shape (“MinkHRNetCSN-K1”). The inlet images (red dotted box) show this key shape retrieved for each
+                of the test shapes.
+            </p>
+        </figure>
+        <h3>MID-FC</h3>
+        <figure style="width: 100%;">
+            <a href="assets/midfc_results.png"><img width="100%" src="assets/midfc_results.png"></a>
             <p class="caption" style="margin-bottom: 1px; text-align: justify">
                 Qualitative comparisons for a few characteristic test shapes of PartNet between the original MID-FC network
                 for 3D shape segmentation (“MID-FC”), and CrossShapeNet (CSN) in case of using self-shape attention alone
