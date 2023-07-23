@@ -1,4 +1,5 @@
 # Cross-Shape Attention for Part Segmentation of 3D Point Clouds
+**Computer Graphics Forum (Proc. SGP), 2023**
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cross-shape-graph-convolutional-networks/3d-semantic-segmentation-on-partnet)](https://paperswithcode.com/sota/3d-semantic-segmentation-on-partnet?p=cross-shape-graph-convolutional-networks)
 
