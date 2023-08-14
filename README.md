@@ -13,7 +13,7 @@ please refer to:
 [Melinos Averkiou](https://melinos.github.io/), [Evangelos Kalogerakis](https://people.cs.umass.edu/~kalo/)
 
 [**Project Page**](https://marios2019.github.io/CSN/) | **Paper** ([arxiv](https://arxiv.org/abs/2003.09053), 
-[CGF](https://diglib.eg.org/handle/10.1111/cgf14909)) | [**SGP 2023 presentation**](https://marios2019.github.io/CSN/assets/CSN_presentation.pdf)
+[CGF](https://doi.org/10.1111/cgf.14909)) | [**SGP 2023 presentation**](https://marios2019.github.io/CSN/assets/CSN_presentation.pdf)
 
 ## CSN pipeline
 <p align="center"><img src="https://marios2019.github.io/CSN/assets/teaser.png" width="100%"></p>
